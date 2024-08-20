@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/brunos1212/Documents/Vagas/gruponexxees/Lightweight DJango/Chapter 01 - The World’s Smallest Django Project/venv"
+VIRTUAL_ENV="/home/brunos1212/Documents/Vagas/gruponexxees/Lightweight DJango/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

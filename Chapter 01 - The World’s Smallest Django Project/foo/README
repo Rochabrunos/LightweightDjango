@@ -1,0 +1,6 @@
+# README
+
+This project was built using the first_project as a template.
+```
+django-admin startproject foo --template=first_project
+```

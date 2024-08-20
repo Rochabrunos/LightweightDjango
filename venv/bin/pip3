@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/home/brunos1212/Documents/Vagas/gruponexxees/Lightweight DJango/Chapter 01 - The World’s Smallest Django Project/venv/bin/python" "$0" "$@"
+'''exec' "/home/brunos1212/Documents/Vagas/gruponexxees/Lightweight DJango/venv/bin/python3" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
