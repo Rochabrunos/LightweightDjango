@@ -20,6 +20,7 @@ settings.configure(
 )
 
 from django import forms
+from django.core.cache import cache
 from io import BytesIO
 from PIL import Image, ImageDraw
 
@@ -33,23 +34,33 @@ class ImageForm(forms.Form):
         """Generate an image of the given type and return as raw bytes"""
         height = self.cleaned_data['height']
         width = self.cleaned_data['width']
-        image = Image.new('RGB', (width, height))
-        draw = ImageDraw.Draw(image)
-        text = '{} x {}'.format(width, height)
-        print(draw.textlength(text))
-        _, _, textwidth, textheight = draw.textbbox((0, 0), text=text)
-        if textwidth < width and textheight < height:
-            texttop = (height - textheight) // 2
-            textleft = (width - textwidth) // 2
-            draw.text((textleft, texttop), text, fill=(255,255,255))
-        content = BytesIO()
-        image.save(content, image_format)
+        key = '%s.%s.%s' % (width,height, image_format)
+        content = cache.get(key)
+        if content is None:
+            image = Image.new('RGB', (width, height))
+            draw = ImageDraw.Draw(image)
+            text = '{} x {}'.format(width, height)
+            _, _, textwidth, textheight = draw.textbbox((0, 0), text=text)
+            if textwidth < width and textheight < height:
+                texttop = (height - textheight) // 2
+                textleft = (width - textwidth) // 2
+                draw.text((textleft, texttop), text, fill=(255,255,255))
+            content = BytesIO()
+            image.save(content, image_format)
+            cache.set(key, content, 60*60)
         content.seek(0)
         return content
-
+    
+import hashlib
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.wsgi import get_wsgi_application
+from django.views.decorators.http import etag
 
+def generate_etag(request, width, height):
+    content = 'Placeholder: {0} x {1}'.format(width, height)
+    return hashlib.sha512(content.encode('UTF-8')).hexdigest()
+
+@etag(generate_etag)
 def placeholder(request, width, height):
     form = ImageForm({'height': height, 'width': width})
     if form.is_valid():
