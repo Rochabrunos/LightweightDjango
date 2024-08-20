@@ -20,7 +20,8 @@ settings.configure(
 )
 
 from django import forms
-from django.conf.urls import url
+from io import BytesIO
+from PIL import Image
 
 class ImageForm(forms.Form):
     """Form to validate requested placeholder image."""
@@ -28,24 +29,34 @@ class ImageForm(forms.Form):
     height = forms.IntegerField(min_value=1, max_value=4096)
     width = forms.IntegerField(min_value=1, max_value=4096)
 
-from django.conf.urls import url
+    def generate(self, image_format='PNG'):
+        """Generate an image of the given type and return as raw bytes"""
+        height = self.cleaned_data['height']
+        width = self.cleaned_data['width']
+        image = Image.new('RGB', (width, height))
+        content = BytesIO()
+        image.save(content, image_format)
+        content.seek(0)
+        return content
+
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.wsgi import get_wsgi_application
 
 def placeholder(request, width, height):
     form = ImageForm({'height': height, 'width': width})
     if form.is_valid():
-        height = form.cleaned_data['height']
-        width = form.cleaned_data['width']
-        return HttpResponse('OK', status=200)
+        image = form.generate()
+        return HttpResponse(image, content_type='image/png', status=200)
     return HttpResponseBadRequest('Invalid Image Request')
 
 def index(request):
     return HttpResponse('Hello World!')
 
+from django.urls import re_path
+
 urlpatterns = (
-    url(r'^$', index, name='homepage'),
-    url(r^'image/(?P<width>[0-9]+)x(?P<height>[0-9]+)/$', placeholder, name='placeholder')
+    re_path(r'^$', index, name='homepage'),
+    re_path(r'^image/(?P<width>[0-9]+)x(?P<height>[0-9]+)/$', placeholder, name='placeholder')
 
 )
 
