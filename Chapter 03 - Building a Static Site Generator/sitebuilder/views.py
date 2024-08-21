@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 from django.http import Http404, HttpResponse
-from django.template import Template
+from django.template import Template, Context
 from django.utils._os import safe_join
 
 def get_page_or_404(name):
@@ -23,11 +23,11 @@ def get_page_or_404(name):
 
 def page(request, slug='index'):
     """Render the requested page if found."""
-    file_name = '{}.hmtl'.format(slug)
+    file_name = '{}.html'.format(slug)
     page = get_page_or_404(file_name)
-    context = {
+    context = Context({
         'slug': slug,
         'page': page,
-    }
+    })
 
-    return HttpResponse(page.render(context, request))
+    return HttpResponse(page.render(context))
