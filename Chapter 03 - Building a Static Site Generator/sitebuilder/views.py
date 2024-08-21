@@ -7,12 +7,12 @@ from django.utils._os import safe_join
 
 def get_page_or_404(name):
     """Return page content as a Django template object or raise 404 error."""
-    try:
+    try:                                                                                                                                                                                                                                                                                                                                        
         # safe_join returns the template's filename, absolute version of the final path
         file_path = safe_join(settings.SITE_PAGES_DIRECTORY, name)
     except ValueError:
         raise Http404('Page Not Found')
-    else:
+    else:                                                                           
         if not os.path.exists(file_path):
             raise Http404('Page Not Found')
     # Opens each file and instanciate a new Django template object

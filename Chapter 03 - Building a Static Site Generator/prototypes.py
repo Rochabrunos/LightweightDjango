@@ -19,7 +19,6 @@ settings.configure(
     MIDDLEWARE_CLASSES=(),
     INSTALLED_APPS=(
         'django.contrib.staticfiles', # {% static %} tag and collectstatic command
-        # 'django.contrib.webdesign', # create placeholder text {% lorem %}
         'sitebuilder',
     ),
     TEMPLATES = [
