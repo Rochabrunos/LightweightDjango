@@ -7,6 +7,7 @@ DEBUG= os.environ.get('DEBUG', 'on') == 'on',
 SECRET_KEY= os.environ.get('SECRET_KEY', os.urandom(32)),
 ALLOWED_HOSTS= os.environ.get('ALLOWED_HOSTS', 'localhost').split(','),
 
+BASE_DIR = os.path.dirname(__file__)
 settings.configure(
     DEBUG= DEBUG,
     SECRET_KEY= SECRET_KEY,
@@ -17,6 +18,13 @@ settings.configure(
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ),
+    INSTALLED_APPS=(
+        'django.contrib.staticfiles',
+    ),
+    TEMPLATE_DIRS=(
+        os.path.join(BASE_DIR, 'templates'),
+    ),
+    STATIC_URL='/static/',
 )
 
 from django import forms
@@ -60,6 +68,8 @@ def generate_etag(request, width, height):
     content = 'Placeholder: {0} x {1}'.format(width, height)
     return hashlib.sha512(content.encode('UTF-8')).hexdigest()
 
+# Using etag decorator has the advantage of calculating the ETag prior to the view being called,
+# which will also save on the processing time and resources.
 @etag(generate_etag)
 def placeholder(request, width, height):
     form = ImageForm({'height': height, 'width': width})
