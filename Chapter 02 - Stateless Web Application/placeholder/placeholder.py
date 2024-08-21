@@ -5,9 +5,13 @@ from django.conf import settings
 
 DEBUG= os.environ.get('DEBUG', 'on') == 'on',
 SECRET_KEY= os.environ.get('SECRET_KEY', os.urandom(32)),
-ALLOWED_HOSTS= os.environ.get('ALLOWED_HOSTS', 'localhost').split(','),
-
+# ALLOWED_HOSTS= list(os.environ.get('ALLOWED_HOSTS', 'localhost,example.com').split(',')),
+ALLOWED_HOSTS=[
+    'localhost',
+    'example.com',
+]
 BASE_DIR = os.path.dirname(__file__)
+
 settings.configure(
     DEBUG= DEBUG,
     SECRET_KEY= SECRET_KEY,
@@ -19,10 +23,20 @@ settings.configure(
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ),
     INSTALLED_APPS=(
-        'django.contrib.staticfiles',
+        'django.contrib.staticfiles', # {% static %} tag and collectstatic command
     ),
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [os.path.join(BASE_DIR, 'templates')],
+            'APP_DIRS': True,
+        },
+    ],
     TEMPLATE_DIRS=(
         os.path.join(BASE_DIR, 'templates'),
+    ),
+    STATICFILES_DIRS=(
+        os.path.join(BASE_DIR, 'static'),
     ),
     STATIC_URL='/static/',
 )
@@ -60,6 +74,8 @@ class ImageForm(forms.Form):
         return content
     
 import hashlib
+from django.urls import reverse
+from django.shortcuts import render 
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.core.wsgi import get_wsgi_application
 from django.views.decorators.http import etag
@@ -71,21 +87,27 @@ def generate_etag(request, width, height):
 # Using etag decorator has the advantage of calculating the ETag prior to the view being called,
 # which will also save on the processing time and resources.
 @etag(generate_etag)
-def placeholder(request, width, height):
+def placeholder(_, width, height):
     form = ImageForm({'height': height, 'width': width})
     if form.is_valid():
         image = form.generate()
-        return HttpResponse(image, content_type='image/png', status=200)
+        return HttpResponse(image, content_type='image/png')
     return HttpResponseBadRequest('Invalid Image Request')
 
 def index(request):
-    return HttpResponse('Hello World!')
+    """Build an example URL by reversing the placeholder view, and passes it to the template context"""
+    example = reverse(placeholder, kwargs={'width':50, 'height': 50})
+    context = {
+        'example': request.build_absolute_uri(example),
+    }
+
+    return render(request, template_name='home/home.html', context=context)
 
 from django.urls import re_path
 
 urlpatterns = (
     re_path(r'^$', index, name='homepage'),
-    re_path(r'^image/(?P<width>[0-9]+)x(?P<height>[0-9]+)/$', placeholder, name='placeholder')
+    re_path(r'^image/(?P<width>[0-9]+)x(?P<height>[0-9]+)$', placeholder, name='placeholder')
 
 )
 
