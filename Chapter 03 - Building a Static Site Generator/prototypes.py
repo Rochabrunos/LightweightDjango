@@ -29,6 +29,10 @@ settings.configure(
     ],
     STATIC_URL='/static/',
     SITE_PAGES_DIRECTORY=os.path.join(BASE_DIR, 'pages'),
+    # Configures the output directory where the statically generated files will live
+    SITE_OUTPUT_DIRECTORY=os.path.join(BASE_DIR, '_build'),
+    # Here is where we enable static content to live in inside the _build directory
+    STATIC_ROOT=os.path.join(BASE_DIR, '_build', 'static'),
 )
 
 if __name__ == "__main__":
