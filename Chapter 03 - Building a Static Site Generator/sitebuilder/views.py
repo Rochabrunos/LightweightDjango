@@ -10,10 +10,13 @@ def get_page_or_404(name):
     try:                                                                                                                                                                                                                                                                                                                                        
         # safe_join returns the template's filename, absolute version of the final path
         file_path = safe_join(settings.SITE_PAGES_DIRECTORY, name)
+        if not os.path.exists(file_path):
+            file_path = safe_join(os.path.dirname(__file__), "templates", name)
     except ValueError:
         raise Http404('Page Not Found')
     else:                                                                           
         if not os.path.exists(file_path):
+            print("Parei aqui", file_path)
             raise Http404('Page Not Found')
     # Opens each file and instanciate a new Django template object
     with open(file_path, 'r') as f:
