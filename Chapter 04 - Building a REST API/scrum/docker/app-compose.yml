@@ -1,9 +1,22 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=brunos1212
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=scrum
+      - POSTGRES_HOST=db
+    expose:
+      - "5432"
+    networks:
+      - djangonetwork
   web:
     build: ../
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ../:/usr/src/app/
     ports:
@@ -14,19 +27,10 @@ services:
       - db:db
     networks:
       - djangonetwork
-  db:
-    image: postgres:15
-    volumes:
-      - pg_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=brunos1212
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=scum
-      - POSTGRES_HOST=db
-    expose:
-      - "5433"
-    networks:
-      - djangonetwork
+      - DJANGO_SUPERUSER_USERNAME=demo
+      - DJANGO_SUPERUSER_PASSWORD=test
+      - DJANGO_SUPERUSER_EMAIL=demo@email.com
 volumes:
   pg_data:
 networks:
