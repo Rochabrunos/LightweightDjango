@@ -1,4 +1,4 @@
-{% include "base.html" %}
+{% extends "base.html" %}
 {% block content %}
 <div class="jumbotron">
     <div class="jumbtrom">
@@ -22,5 +22,10 @@
     </div>
 </div>
 <hr>
+<footer>
+    <div class="container">
+        <p>&copy; Your Company {% now 'Y' %}</p>
+    </div>
+</footer>
 {% endblock %}
 

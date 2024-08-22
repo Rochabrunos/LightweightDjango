@@ -8,6 +8,7 @@ SECRET_KEY= os.environ.get('SECRET_KEY', os.urandom(32)),
 ALLOWED_HOSTS=[
     'localhost',
     '127.0.0.1',
+    'testserver',
 ]
 
 BASE_DIR = os.path.dirname(__file__)

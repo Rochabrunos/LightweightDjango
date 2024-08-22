@@ -21,7 +21,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Request pages and build output."""
         # Check if any arguments are passed into the command
-        if args:
+        if options:
             pages = options['files']
             available = list(get_pages())
             invalid = []
@@ -43,8 +43,10 @@ class Command(BaseCommand):
         client = Client()
 
         for page in get_pages():
-            url = reverse('page', kwargs={'slug': page})
+            print(page)
+            url = reverse('page', args=[page])
             response = client.get(url)
+            print(response.content)
             if page == 'index':
                 output_dir = settings.SITE_OUTPUT_DIRECTORY
             else:
@@ -53,5 +55,5 @@ class Command(BaseCommand):
                 if not os.path.exists(output_dir):
                     os.makedirs(output_dir)
             # Here, the template is rendered as static content
-            with open(os.path.join(output_dir, 'index.html'), 'wb') as f:
+            with open(os.path.join(output_dir, '{}.html'.format(page)), 'wb') as f:
                 f.write(response.content)
