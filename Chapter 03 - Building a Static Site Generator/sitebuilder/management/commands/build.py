@@ -16,13 +16,13 @@ def get_pages():
 class Command(BaseCommand):
     help = 'Build static site output.'
 
-    def add_arguments(self, parser):
-        parser.add_argument("files", nargs="+")
     def handle(self, *args, **options):
         """Request pages and build output."""
         # Check if any arguments are passed into the command
-        if options:
-            pages = options['files']
+        settings.DEBUG = False
+        print(args)
+        if args:
+            pages = args
             available = list(get_pages())
             invalid = []
             for page in pages:
@@ -39,7 +39,7 @@ class Command(BaseCommand):
             os.mkdir(settings.SITE_OUTPUT_DIRECTORY)
             os.mkdir(settings.STATIC_ROOT)
             # Copy all of the site static resources into the STATIC_ROOT, which is configured to be inside the SITE_OUTPUT_DIRECTORY
-        call_command('collectstatic', interactive=False, clear=True, verbosity=0)
+        call_command('collectstatic', interactive=True, verbosity=0)
         client = Client()
 
         for page in get_pages():

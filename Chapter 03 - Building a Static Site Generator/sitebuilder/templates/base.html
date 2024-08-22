@@ -6,8 +6,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=devide-width,initial-scale=1">
         <title>{% block title %}Rapid Prototypes{% endblock %}</title>
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/site.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' clean=True %}">
+        <link rel="stylesheet" href="{% static 'css/site.css' clean=True %}">
 
     </head>
     <body id="{% block body-id %}body{% endblock %}">
@@ -44,7 +44,7 @@
         {% block content %} 
         
         {% endblock %}
-        <script src="{% static 'js/jquery.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/jquery.min.js' clean=True %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' clean=True %}"></script>
     </body>
 </html>

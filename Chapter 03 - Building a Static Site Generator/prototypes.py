@@ -2,7 +2,7 @@ import sys
 import os
 from django.conf import settings
 
-DEBUG= os.environ.get('DEBUG', 'on') == 'on',
+DEBUG= os.environ.get('DEBUG', 'off') == 'on',
 SECRET_KEY= os.environ.get('SECRET_KEY', os.urandom(32)),
 # ALLOWED_HOSTS= list(os.environ.get('ALLOWED_HOSTS', 'localhost,example.com').split(',')),
 ALLOWED_HOSTS=[
@@ -13,7 +13,7 @@ ALLOWED_HOSTS=[
 
 BASE_DIR = os.path.dirname(__file__)
 settings.configure(
-    DEBUG= DEBUG,
+    DEBUG= False,
     SECRET_KEY= SECRET_KEY,
     ALLOWED_HOSTS= ALLOWED_HOSTS,
     ROOT_URLCONF='sitebuilder.urls',
@@ -23,11 +23,11 @@ settings.configure(
         'sitebuilder',
     ),TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-    }
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+    },
     ],
+    STATICFILES_STORAGE='django.contrib.staticfiles.storage.ManifestStaticFilesStorage',
     STATIC_URL='/static/',
     SITE_PAGES_DIRECTORY=os.path.join(BASE_DIR, 'pages'),
     # Configures the output directory where the statically generated files will live
