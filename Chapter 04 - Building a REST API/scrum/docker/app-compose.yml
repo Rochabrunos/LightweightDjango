@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  web:
+    build: ../
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ../:/usr/src/app/
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    links:
+      - db:db
+    networks:
+      - djangonetwork
+  db:
+    image: postgres:15
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=brunos1212
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=scum
+      - POSTGRES_HOST=db
+    expose:
+      - "5433"
+    networks:
+      - djangonetwork
+volumes:
+  pg_data:
+networks:
+      djangonetwork:
+          driver: bridge
