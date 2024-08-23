@@ -16,7 +16,9 @@ services:
       - djangonetwork
   web:
     build: ../
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations board && 
+          python manage.py migrate board &&
+          python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ../:/usr/src/app/
     ports:
