@@ -3,6 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:15
+    container_name: db
     volumes:
       - pg_data:/var/lib/postgresql/data/
     environment:
@@ -16,25 +17,21 @@ services:
       - djangonetwork
   web:
     build: ../
-    command: bash -c "python manage.py makemigrations board && 
-          python manage.py migrate board &&
-          python manage.py runserver 0.0.0.0:8000"
+    tty: true
+    command: python ./manage.py runserver 0.0.0.0:8000
+    container_name: django
     volumes:
-      - ../:/usr/src/app/
+      - django_data:/usr/src/app/
     ports:
       - 8000:8000
     depends_on:
       - db
-    links:
-      - db:db
     networks:
       - djangonetwork
-    environment:
-      - DJANGO_SUPERUSER_USERNAME=demo
-      - DJANGO_SUPERUSER_PASSWORD=test
-      - DJANGO_SUPERUSER_EMAIL=demo@email.com
+    env_file: "env-file"
 volumes:
   pg_data:
+  django_data:
 networks:
       djangonetwork:
           driver: bridge
